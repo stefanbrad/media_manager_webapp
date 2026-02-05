@@ -1,9 +1,6 @@
-
--- Create database
 CREATE DATABASE IF NOT EXISTS multimedia_db;
 USE multimedia_db;
 
--- Users table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -13,7 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Sessions table
 CREATE TABLE IF NOT EXISTS sessions (
     id VARCHAR(36) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -22,7 +18,6 @@ CREATE TABLE IF NOT EXISTS sessions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Categories table
 CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -30,7 +25,6 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Videos table
 CREATE TABLE IF NOT EXISTS videos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -41,12 +35,10 @@ CREATE TABLE IF NOT EXISTS videos (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
 
--- Insert default admin user
 INSERT INTO users (name, email, password)
 VALUES ('Admin', 'admin@example.com', 'admin123')
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 
--- Insert default categories
 INSERT INTO categories (name) VALUES 
 ('Movies'),
 ('TV Shows'),

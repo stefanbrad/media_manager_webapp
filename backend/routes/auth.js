@@ -11,12 +11,12 @@ const { v4: uuidv4 } = require('uuid');
 const { pool } = require('../config/database');
 const router = express.Router();
 
-// Login endpoint
+// login endpoint
 router.post('/login', async (req, res) => {
     console.log('BODY:',req.body);
     const { username, password } = req.body;
     
-    console.log('Login attempt:', { username, password }); // Debug log
+    console.log('Login attempt:', { username, password }); 
     
     if (!username || !password) {
         console.log('Missing credentials');
@@ -27,13 +27,12 @@ router.post('/login', async (req, res) => {
     }
     
     try {
-        // Check user credentials in database
         const [results] = await pool.query(
             'SELECT id, name, email, password FROM users WHERE email = ?',
             [username]
         );
         
-        console.log('Database results:', results); // Debug log
+        console.log('Database results:', results); 
         
         if (results.length === 0) {
             console.log('No user found with email:', username);
@@ -45,23 +44,23 @@ router.post('/login', async (req, res) => {
         
         const dbUser = results[0];
         
-        // In production, use bcrypt to compare hashed passwords
+        // should use bcrypt to compare hashed passwords in production
         if (dbUser.password !== password) {
             console.log('Password mismatch:', { 
                 provided: password, 
                 stored: dbUser.password 
-            }); // Debug log
+            }); 
             return res.status(401).json({ 
                 success: false,
                 message: 'Invalid credentials' 
             });
         }
         
-        // Generate session ID
+        // gen session ID
         const sessionId = uuidv4();
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
         
-        // Store session in database
+        // store session in database
         await pool.query(
             'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
             [sessionId, dbUser.id, expiresAt]
@@ -87,7 +86,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Logout endpoint
+//logout endp
 router.post('/logout', async (req, res) => {
     const { session_id } = req.body;
     
@@ -99,7 +98,7 @@ router.post('/logout', async (req, res) => {
     }
     
     try {
-        // Remove session from database
+        // remove session from database
         await pool.query('DELETE FROM sessions WHERE id = ?', [session_id]);
         
         res.json({ 
@@ -115,7 +114,7 @@ router.post('/logout', async (req, res) => {
     }
 });
 
-// Middleware to validate session
+// validate ses
 async function validateSession(req, res, next) {
     const sessionId = req.headers['x-session-id'];
     
@@ -127,7 +126,6 @@ async function validateSession(req, res, next) {
     }
     
     try {
-        // Check if session exists and is not expired
         const [results] = await pool.query(
             'SELECT user_id FROM sessions WHERE id = ? AND expires_at > NOW()',
             [sessionId]
@@ -152,7 +150,6 @@ async function validateSession(req, res, next) {
     }
 }
 
-// Get all videos
 router.get('/videos/:session_id', (req, res) => {
   const result = videos.map(v => {
     const category = categories.find(c => c.id === v.categoryId);
@@ -164,7 +161,7 @@ router.get('/videos/:session_id', (req, res) => {
   res.json(result);
 });
 
-// Create video
+// create video
 router.post('/video', (req, res) => {
   const { session_id, title, url, categoryId } = req.body;
 
@@ -183,7 +180,7 @@ router.post('/video', (req, res) => {
   res.json({ success: true, video: newVideo });
 });
 
-// Delete video
+// del video
 router.delete('/video/:session_id/:id', (req, res) => {
   const id = parseInt(req.params.id);
   videos = videos.filter(v => v.id !== id);

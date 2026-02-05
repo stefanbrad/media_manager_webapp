@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
 
-// GET /users - list all users
+// GET /users 
 router.get('/', async (req, res) => {
   try {
     const [users] = await pool.query('SELECT id, name, email FROM users');
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /users - create new user
+// POST /users - creates new user
 router.post('/', async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {

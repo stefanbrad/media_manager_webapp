@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
 
-// Get all categories
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, name FROM categories');
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add new category
 router.post('/', async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ message: 'Category name required' });
@@ -27,7 +25,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Delete category
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
 

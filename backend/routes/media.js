@@ -3,7 +3,6 @@ const router = express.Router();
 const { pool } = require('../config/database');
 const { validateSession } = require('./auth');
 
-// Get all videos
 router.get('/', validateSession, async (req, res) => {
     try {
         const [results] = await pool.query(`
@@ -21,7 +20,6 @@ router.get('/', validateSession, async (req, res) => {
     }
 });
 
-// Create video
 router.post('/', validateSession, async (req, res) => {
     const { title, url, category_id } = req.body;
     

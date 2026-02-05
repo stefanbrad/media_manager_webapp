@@ -6,24 +6,24 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Middleware
+// middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Route imports
+// route imports
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const categoryRoutes = require('./routes/categories');
 const videoRoutes = require('./routes/videos');
 
-// Register routes
+// register routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/videos', videoRoutes);
 
-// Fallback: serve index.html for unmatched routes
+// fallback: serve index.html for unmatched routes
 const frontendPath = path.join(__dirname, '../frontend');
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.url.startsWith('/api')) {
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   }
 });
 
-// Start server
+// start server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/database');
 
-// Get all videos with category names
+// get all videos with category names
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add new video
 router.post('/', async (req, res) => {
   const { title, url, categoryId } = req.body;
 
